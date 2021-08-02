@@ -1,0 +1,89 @@
+@hostname = localhost
+@api_versao = v1 
+@porta = 8000
+@protocolo = http
+@base_url = {{protocolo}}://{{hostname}}:{{porta}}
+@api_url = {{base_url}}/api/{{api_versao}}
+@auth_url =  {{base_url}}/oauth2
+
+###
+GET {{api_url}}/grupo-atendimento
+
+###
+GET {{api_url}}/local-vacinacao
+
+###
+GET {{api_url}}/cidadao
+
+
+
+### Atenticar o admin utilizando JWT
+# @name login
+POST {{base_url}}/api/token/ HTTP/1.1
+content-type: application/json
+
+{
+   "email": "{{$dotenv DJANGO_ADMIN_EMAIL}}", 
+   "password": "{{$dotenv DJANGO_ADMIN_PASSWORD}}"
+}
+
+
+### Requisitar conteúdo restrito com token obtido no login
+@authToken = {{login.response.body.access}}
+@refreshToken = {{login.response.body.refresh}}
+GET {{base_url}}/api/v1/
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Logout invalidando o Token
+POST {{base_url}}/api/logout/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+   "refresh_token" : "{{refreshToken}}"
+}
+
+
+### Atenticar o usuario utilizando JWT
+# @name loginUsuario
+POST {{base_url}}/api/token/ HTTP/1.1
+content-type: application/json
+
+{
+   "email": "{{$dotenv USER_TESTE_EMAIL}}", 
+   "password": "{{$dotenv USER_TESTE_PASSWORD}}"
+}
+
+### Pegar dados do usuário logado
+@authTokenUsuario = {{loginUsuario.response.body.access}}
+GET {{base_url}}/api/verlogin/
+Content-Type: application/json
+Authorization: Bearer {{authTokenUsuario}}
+
+
+###
+@authTokenUsuario = {{loginUsuario.response.body.access}}
+POST {{base_url}}/api/v1/agendamento-vacinacao/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{authTokenUsuario}}
+
+{
+   "status": 1, 
+   "hora": "10:22:00",
+   "data": "2021-08-11",
+   //"data_cadastro": "2021-07-31 19:22:46.499631-03",
+   "cidadao_id": "dc74d025-aae7-45b9-9643-7a370bfb5e40", 
+   "grupo_atendimento_id": "47d26477-585f-48dd-86b3-483074959575",
+   "local_vacinacao_id": "2546930"
+}
+
+
+
+### Pegar locais próximos
+GET {{api_url}}/local-vacinacao-proximos/?latitude=1300&longitude=12000
+
+###
+GET {{base_url}}/api/v1/agendamento-vacinacao/6bca8cb2-332f-4478-a40a-ade2186acb03 
+### Pegar locais
+GET {{api_url}}/local-vacinacao/?format=json&page=1

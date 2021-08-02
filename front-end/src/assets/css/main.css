@@ -1,0 +1,42 @@
+input.form-consulta{
+   color: blue !important;
+   font-weight: bold;
+}
+
+textarea.form-consulta{
+   color: blue !important;
+   font-weight: bold;
+}
+
+form.form-consulta label {
+   font-size: 1em;
+   color: black;
+}
+
+path.estadoSemDoenca {
+   fill: rgb(101, 101, 101) !important;
+}
+path.estadoComDoenca {
+   fill: #0066e3 !important;
+}
+a:hover path.estadoComDoenca {
+   fill: rgb(32, 58, 255) !important;
+}
+a:hover path.estadoSemDoenca {
+   fill: rgb(45, 45, 45) !important;
+}
+
+/* */
+
+path.estadoSemDoenca .circle {
+   fill: rgb(40, 40, 40) !important;
+}
+path.estadoComDoenca .circle{
+   fill: #0094d9 !important;
+}
+a:hover path.estadoComDoenca .circle{
+   fill: #005d88 !important;
+}
+a:hover path.estadoSemDoenca .circle{
+   fill: rgb(45, 45, 45) !important;
+}

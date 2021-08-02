@@ -1,0 +1,21 @@
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Environments 
+.env 
+venv/
+
+# Visual Studio Code # 
+.vscode/*
+
+# Distribution / packaging
+build/
+
+# Dados
+datasets/*.csv
+
