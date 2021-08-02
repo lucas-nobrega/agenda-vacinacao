@@ -9,12 +9,14 @@
 ###
 GET {{api_url}}/grupo-atendimento
 
-###
+###*
 GET {{api_url}}/local-vacinacao
 
 ###
 GET {{api_url}}/cidadao
 
+###
+//GET {{api_url}}/cidadao-agendamento/?cidadao_id=dc74d025-aae7-45b9-9643-7a370bfb5e40
 
 
 ### Atenticar o admin utilizando JWT
@@ -79,10 +81,8 @@ Authorization: Bearer {{authTokenUsuario}}
 }
 
 
-
 ### Pegar locais próximos
-GET {{api_url}}/local-vacinacao-proximos/?latitude=1300&longitude=12000
-
+GET {{api_url}}/local-vacinacao-proximos/?latitude=-5.8294272&longitude=-35.2026624
 ###
 GET {{base_url}}/api/v1/agendamento-vacinacao/6bca8cb2-332f-4478-a40a-ade2186acb03 
 ### Pegar locais

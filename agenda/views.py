@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return render(request, 'index.html')
 
 
 class CidadaoViewSet(viewsets.ModelViewSet):
@@ -86,6 +86,23 @@ class AgendamentoVacinacaoViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class CidadaoAgendamentoViewSet(viewsets.ModelViewSet):
+    #pagination_class = None
+    #queryset = Cidadao.objects.all()
+    serializer_class = AgendamentoVacinacaoSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        #queryset = AgendamentoVacinacao.objects.all()
+        #logger.warning(queryset)
+        cidadao_id = self.request.query_params.get('cidadao_id')
+        agendamentos = AgendamentoVacinacao.objects.all().filter(cidadao_id=cidadao_id)
+        return agendamentos
+        
+
+
+
+
 
 class LocalVacinacaoProximoViewSet(viewsets.ModelViewSet):
     serializer_class = LocalVacinacaoSerializer
@@ -94,7 +111,11 @@ class LocalVacinacaoProximoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         latitude = float(self.request.query_params.get('latitude'))
         longitude = float(self.request.query_params.get('longitude'))
+        proximidade = float(self.request.query_params.get('proximidade'))
+
+        distancia = proximidade/111
+
         return LocalVacinacao.objects.all().filter(
-            vlr_latitude__gte=(latitude-0.03), vlr_latitude__lte=(latitude+0.03)).filter(
-            vlr_longitude__gte=(longitude-0.03), vlr_longitude__lte=(longitude+0.03))
+            vlr_latitude__gte=(latitude-distancia), vlr_latitude__lte=(latitude+distancia)).filter(
+            vlr_longitude__gte=(longitude-distancia), vlr_longitude__lte=(longitude+distancia))
        

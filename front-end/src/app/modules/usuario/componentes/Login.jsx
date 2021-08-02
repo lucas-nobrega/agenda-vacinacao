@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
@@ -19,7 +19,6 @@ import {
     Form,
     Input,
     Row,
-    Link,
     Col,
     Alert,
     InputGroup,
@@ -120,9 +119,9 @@ class Login extends React.Component {
                                                     </Button>
                                                 </Col>
                                                 <Col>
-                                                    <a to="/admin/cadastro/cidadao" className="btn btn-round btn-md bg-success">
+                                                    <Link to={this.appRelativePath +"/cadastro/cidadao"} className="btn btn-round btn-md bg-success">
                                                         Cadastrar
-                                                    </a>
+                                                    </Link>
                                                 </Col>
                                             </Row>
                                         </div>

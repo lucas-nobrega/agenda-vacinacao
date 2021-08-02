@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'agendavacina.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'dist'), os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'front-end/build'), os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,6 +77,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'agendavacina.wsgi.application'
+
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -135,6 +138,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    'front-end/build/static/',
+    'front-end/build/'
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -177,13 +186,12 @@ LOGGING = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS =['192.168.0.165','127.0.0.1', 'localhost']
+ALLOWED_HOSTS =['192.168.0.165','127.0.0.1', 'localhost', '192.168.0.120']
+
+SIMPLE_JWT = {
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
+}
 
 AUTH_USER_MODEL = 'users.User'
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-ALLOWED_HOSTS = ['192.168.0.120', '127.0.0.1', 'localhost']
-
 
 

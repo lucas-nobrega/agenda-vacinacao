@@ -1,6 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import MeusAgendamentosScreen from './src/pages/MeusAgendamentos'

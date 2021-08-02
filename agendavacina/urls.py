@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from rest_framework import routers
 from agenda import views
 from users.views import UserLoginViewSet, UserViewSet
@@ -31,16 +32,34 @@ router.register(r'cidadao', views.CidadaoViewSet)
 router.register(r'local-vacinacao', views.LocalVacinacaoViewSet)
 router.register(r'agendamento-vacinacao', views.AgendamentoVacinacaoViewSet, basename=views.AgendamentoVacinacaoSerializer)
 router.register(r'local-vacinacao-proximos', views.LocalVacinacaoProximoViewSet, basename=views.LocalVacinacaoProximoViewSet)
+router.register(r'cidadao-agentamentos', views.CidadaoAgendamentoViewSet, basename=views.CidadaoAgendamentoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('agenda/', include('agenda.urls')),
     path('api/v1/', include(router.urls)),
-    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', CustomTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/logout/', LogoutView.as_view(), name='auth_logout'),
-    path('api/verlogin/', UserLoginViewSet.as_view(), name="verlogin")
+    path('api/verlogin/', UserLoginViewSet.as_view(), name="verlogin"),
+
+    path(
+        "manifest.json",
+        TemplateView.as_view(
+            template_name="manifest.json",
+            content_type="application/json"
+        ),
+        name="manifest.json",
+    ),
+    path(
+        "asset-manifest.json",
+        TemplateView.as_view(
+            template_name="asset-manifest.json",
+            content_type="application/json"
+        ),
+        name="asset-manifest.json",
+    ),
+ 
 ]
-
-

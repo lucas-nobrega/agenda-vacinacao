@@ -29,6 +29,7 @@ class Header extends React.Component {
       dropdownOpen: false,
       color: "transparent",
     };
+    this.appRelativePath = "/agenda";
     this.toggle = this.toggle.bind(this);
     this.dropdownToggle = this.dropdownToggle.bind(this);
     this.sidebarToggle = React.createRef();
@@ -159,7 +160,7 @@ class Header extends React.Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                 {this.props.logado && (
-                  <DropdownItem tag="a" to="/admin/pagina_inicial" onClick={(e) => this.tratarLogout(e)}>
+                  <DropdownItem tag="a" to={this.appRelativePath + "/pagina_inicial"} onClick={(e) => this.tratarLogout(e)}>
                     Sair
                   </DropdownItem>
                   )}
@@ -170,7 +171,7 @@ class Header extends React.Component {
               )}
               <NavItem>
                 {!this.props.logado && (
-                  <Link to="/admin/login" className="nav-link btn-rotate">
+                  <Link to={this.appRelativePath + "/login"} className="nav-link btn-rotate">
                     Entrar
                   </Link>
                 )}

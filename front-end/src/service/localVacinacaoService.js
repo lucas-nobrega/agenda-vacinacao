@@ -9,8 +9,8 @@ const localVacinacaoService = {
       const response = await api.get('local-vacinacao/', { params: { format: "json", page: paginaAtual}});
       return response;
    },
-   async getLocaisVacinacaoProximos(latitude, longitude) {
-      const response = await api.get('local-vacinacao-proximos/?latitude=' + latitude + '&longitude=' + longitude);
+   async getLocaisVacinacaoProximos(latitude, longitude, proximidade) {
+      const response = await api.get('local-vacinacao-proximos/?latitude=' + latitude + '&longitude=' + longitude + '&proximidade=' + proximidade);
       return response;
    },
 

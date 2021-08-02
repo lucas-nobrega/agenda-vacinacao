@@ -24,6 +24,7 @@ class Agendar extends React.Component{
             aguardandoEnvio: false,
             doenca: [],
             locaisVacinacao: [],
+            proximidade: 5,
         }
     }
 
@@ -63,11 +64,19 @@ class Agendar extends React.Component{
 
     carregarLocaisProximos = (latitude, longitude) => {
         this.setState({ aguardandoDados: true });
-        localVacinacaoService.getLocaisVacinacaoProximos(latitude, longitude).then((resposta) => {
+        localVacinacaoService.getLocaisVacinacaoProximos(latitude, longitude, this.state.proximidade).then((resposta) => {
             this.setState({
                 locaisVacinacao: resposta.data.results,
                 aguardandoDados: false,
             });
+        });
+    };
+
+    recarregarLocais = e => {
+        this.setState({proximidade: e.target.value});
+        //console.log("TESTE - ", e.target.value);
+        navigator.geolocation.getCurrentPosition(position => {
+            this.carregarLocaisProximos(position.coords.latitude, position.coords.longitude);
         });
     };
 
@@ -103,8 +112,6 @@ class Agendar extends React.Component{
                                 />
                             </FormGroup>
                         </Col>
-                    </Row>
-                    <Row>
                         <Col>
                             <FormGroup>
                                 <Label>Hora</Label>
@@ -117,10 +124,9 @@ class Agendar extends React.Component{
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col sm="8">
                             <FormGroup>
                                 <Label>Local</Label>
-
                                 <Input
                                     type="select"
                                     name="locaisProximos"
@@ -130,12 +136,45 @@ class Agendar extends React.Component{
                                     {this.state.locaisVacinacao.map((local, index) => (
                                         <option>{local.nom_estab}</option>
                                     ))}
+                                </Input>  
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup>
+                                <Label>Proximidade</Label>
+                                <Input
+                                    type="number"
+                                    name="proximidade"
+                                    id="proximidade"
+                                    placeholder="Informe em quilômetros"
+                                    onChange={this.recarregarLocais}
+                                />
+                                {/*
+                                <Input
+                                    type="select"
+                                    name="proximidade"
+                                    id="proximidade"
+                                    placeholder="Informe a proximidade"
+                                    onChange={this.recarregarLocais}
+                                >
+                                    <option value="3">3 quilômetros</option>
+                                    <option value="5">5 quilômetros</option>
+                                    <option value="10">10 quilômetros</option>
+                                    <option value="15">15 quilômetros</option>
+                                    <option value="30">30 quilômetros</option>
+                                    <option value="50">50 quilômetros</option>
+                                    <option value="100">100 quilômetros</option>
+                                    <option value="200">200 quilômetros</option>
+                                    <option value="300">300 quilômetros</option>
+                                    <option value="400">400 quilômetros</option>
+                                    <option value="500">500 quilômetros</option>
                                 </Input>
+                                */}
                             </FormGroup>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col sm="4">
                             <FormGroup>
                                 <Label>Grupo de atendimento</Label>
                                 <Input
@@ -145,9 +184,7 @@ class Agendar extends React.Component{
                                 />
                             </FormGroup>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col>
+                        <Col sm="4">
                             <FormGroup>
                                 <Label>Idade</Label>
                                 <Input
@@ -157,9 +194,7 @@ class Agendar extends React.Component{
                                 />
                             </FormGroup>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col>
+                        <Col sm="4">
                             <FormGroup>
                                 <Label>Status</Label>
                                 <Input

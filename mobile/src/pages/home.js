@@ -1,16 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { Button, View, Text,StyleSheet,TouchableOpacity,Image } from 'react-native';
+import { View, Text,StyleSheet,TouchableOpacity,Image,Button  } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default class Home extends React.Component { 
   constructor(){
     super();
-    this.checkToken();
-  } 
+    this.verLogin();
+  }
 
-  checkToken = async() =>{
-    console.log("edimarToken");
+
+  verLogin = async() =>{
     const token = await AsyncStorage.getItem('token');
     if(token){
       this.props.navigation.navigate('Agendamentos')

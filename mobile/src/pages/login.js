@@ -14,28 +14,26 @@ import {
 export default class Login extends Component {
   constructor(){
     super();
-    this.checkToken();
+    this.verLogin();
   }  
   state = {username: '', password: '', loading: false};
    
   onChangeHandle(state, value){
     this.setState({[state]: value})
   }
-  checkToken = async() =>{    
+  verLogin = async() =>{    
     const token = await AsyncStorage.getItem('token');
     if(token){
-      console.log("edimartoken");
       this.props.navigation.navigate('Agendamentos')
     }
   }
   doLogin(){//admin@localhost
-    console.log("edimar");
-    const {username, password} = this.state;
+    const {username, password} = this.state; 
     const req ={      
         'email': username, 
         'password': password     
     }
-    axios.post('http://localhost:8000/api/token/',req)
+    axios.post('http://192.168.0.165:8000/api/token/',req) 
     .then(
       res => {
         console.log(res);
@@ -87,8 +85,7 @@ export default class Login extends Component {
 
         <TouchableOpacity
           style={styles.loginBtn}
-          onPress= { () => this.doLogin()}
-          disabled={loading}
+          onPress= { () => this.doLogin()}          
           >
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>

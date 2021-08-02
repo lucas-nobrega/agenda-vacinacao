@@ -14,35 +14,30 @@ import AgendamentoVacinacao from "app/modules/agendamento/gerir/AgendamentoVacin
 //import CadastroDoenca from "app/modules/cidadao/componentes/CadastroDoenca"
 import AgendarVacinacao from "app/modules/agendamento/usuario/AgendarVacinacao";
 
+const appRelativePath = "/agenda";
+
 var routes = [
   {
     path: "/login",
     name: "",
     icon: "nc-icon nc-single-02",
     component: Login,
-    layout: "/admin",
+    layout: appRelativePath,
   },
 
-  {
-    path: "/cadastro/medico",
-    name: "",
-    icon: "nc-icon nc-single-02",
-    //component: CadastroMedico,
-    layout: "/admin",
-  },
   {
     path: "/cadastro/cidadao",
     name: "",
     icon: "nc-icon nc-single-02",
     component: CadastroCidadao,
-    layout: "/admin",
+    layout: appRelativePath,
   },
   {
     path: "/cadastro/grupoatendimento",
     name: "Gerir Grupos de Atendimento",
     icon: "nc-icon nc-sound-wave",  
     component: GrupoAtendimento,
-    layout: "/admin",
+    layout: appRelativePath,
     //permissions: ['medico', 'medicoadm'],
   },
   {
@@ -50,7 +45,7 @@ var routes = [
     name: "Gerenciamento de Cidadaos",
     icon: "nc-icon nc-circle-10",
     component: GerenciamentoCidadao,
-    layout: "/admin",
+    layout: appRelativePath,
     //permissions: ['medico', 'medicoadm'],
   },
   {
@@ -58,7 +53,7 @@ var routes = [
     name: "Locais Vacinação",
     icon: "nc-icon nc-paper",
     component: LocalVacinacao,
-    layout: "/admin",
+    layout: appRelativePath,
     //permissions: ['cidadao'],
   },
   
@@ -67,25 +62,16 @@ var routes = [
     name: "Agendamentos",
     icon: "nc-icon nc-briefcase-24",
     component: AgendamentoVacinacao,
-    layout: "/admin",
+    layout: appRelativePath,
     //permissions: ['medico', 'medicoadm'],
   },
-  {
-    path: "/cadastro/cidadaodoenca",
-    name: "Cadastrar Doença do Cidadao",
-    icon: "nc-icon nc-single-02",
-    //component: CadastroDoenca,
-    layout: "/admin",
-    //permissions: ['medico', 'medicoadm'],
-  },
-
-  // Rotas do Template ## RERVISAR
+   // Rotas do Template ## RERVISAR
   {
     path: "/pagina_inicial",
     name: "Pagina Inicial",
     icon: "nc-icon nc-bank",
     component: PaginaInicial,
-    layout: "/admin",
+    layout: appRelativePath,
   },
 
   {
@@ -93,7 +79,7 @@ var routes = [
     name: "Agendamento",
     icon: "nc-icon nc-single-02",
     component: AgendarVacinacao,
-    layout: "/user",
+    layout: appRelativePath,
   },
 ];
 export default routes;
