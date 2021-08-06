@@ -5,7 +5,7 @@ const grupoAtendimentoService = {
       return api.get('grupo-atendimento/' + id)
          .then(response => response)
    },
-   async getGruposAtendinento() {
+   async getGruposAtendimento() {
       const response = await api.get('grupo-atendimento/', { params: { format: "json"}});
       return response;
    },

@@ -167,6 +167,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication', # Necessário para a Api nevegavel nativa do RestFrameWork
     )
 }
 
@@ -189,7 +190,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS =['192.168.0.165','127.0.0.1', 'localhost', '192.168.0.120']
 
 SIMPLE_JWT = {
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
+   'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+   'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
 }
 
 AUTH_USER_MODEL = 'users.User'

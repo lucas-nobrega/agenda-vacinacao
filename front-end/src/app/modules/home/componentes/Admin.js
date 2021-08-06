@@ -96,7 +96,8 @@ class Dashboard extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-   logado: state.usuario.logado
+   logado: state.usuario.logado,
+   perfis: state.usuario.perfis,
 });
 
 const mapDispatchToProps = (dispatch) => {

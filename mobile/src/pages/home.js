@@ -72,6 +72,6 @@ export default class Home extends React.Component {
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 40,
-      backgroundColor: '#FF1493',
+      backgroundColor: '#FFBC40',
     },
   });

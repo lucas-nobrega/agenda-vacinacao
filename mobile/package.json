@@ -1,43 +1,43 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
+  "name": "mobile",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.5",
-    "@react-native-community/masked-view": "^0.1.10",
-    "@react-navigation/native": "^5.9.4",
-    "@react-navigation/stack": "^5.14.5",
+    "@react-navigation/bottom-tabs": "^6.0.1",
+    "@react-navigation/native": "^6.0.1",
+    "@react-navigation/native-stack": "^6.0.1",
+    "AsyncStorage": "^0.1.5",
     "axios": "^0.21.1",
-    "expo": "~42.0.1",
-    "expo-media-library": "~12.1.2",
-    "expo-permissions": "~12.1.1",
-    "expo-print": "~10.2.1",
-    "expo-sharing": "~9.2.1",
-    "expo-status-bar": "~1.0.4",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
-    "react-native-cookie": "^0.3.0",
+    "react": "17.0.1",
+    "react-native": "0.64.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-html-to-pdf": "^0.10.0",
     "react-native-paper": "^4.9.2",
-    "react-native-print": "^0.9.0",
-    "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.2.0",
-    "react-native-screens": "^3.4.0",
+    "react-native-screens": "^3.5.0",
     "react-native-vector-icons": "^8.1.0",
-    "react-native-view-shot": "^3.1.2",
-    "react-native-web": "~0.13.12",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0"
+    "@babel/core": "^7.14.8",
+    "@babel/runtime": "^7.14.8",
+    "@react-native-community/eslint-config": "^3.0.0",
+    "babel-jest": "^27.0.6",
+    "eslint": "^7.32.0",
+    "jest": "^27.0.6",
+    "metro-react-native-babel-preset": "^0.66.2",
+    "react-test-renderer": "17.0.1"
   },
-  "private": true
+  "jest": {
+    "preset": "react-native"
+  }
 }

@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from rest_framework import routers
 from agenda import views
-from users.views import UserLoginViewSet, UserViewSet
+from users.views import RegisterView, UserLoginViewSet, UserViewSet
 from rest_framework_simplejwt.views import (
     TokenVerifyView,
     TokenRefreshView,
@@ -44,6 +44,8 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/logout/', LogoutView.as_view(), name='auth_logout'),
     path('api/verlogin/', UserLoginViewSet.as_view(), name="verlogin"),
+    path('auth/', include('rest_framework.urls')),
+    path('cadastro/', RegisterView.as_view(), name='auth_register'),
 
     path(
         "manifest.json",

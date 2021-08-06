@@ -22,7 +22,7 @@ class GrupoAtendimento extends React.Component {
   }
   carregarGruposAtendimento = () => {
     this.setState({ aguardandoDados: true });
-    grupoAtendimentoService.getGruposAtendinento().then((resposta) => {
+    grupoAtendimentoService.getGruposAtendimento().then((resposta) => {
       this.setState({ gruposAtendimento: resposta.data, aguardandoDados: false });
     });
   };

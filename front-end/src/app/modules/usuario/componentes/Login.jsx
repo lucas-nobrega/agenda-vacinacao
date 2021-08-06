@@ -28,7 +28,7 @@ import {
 class Login extends React.Component {
     constructor(props) {
         super(props);
-
+        this.appRelativePath = "/agenda"
         this.state = {
             verSenha: false,
             tipoSenha: "password",
@@ -119,6 +119,7 @@ class Login extends React.Component {
                                                     </Button>
                                                 </Col>
                                                 <Col>
+                                                {console.log(this.appRelativePath)}
                                                     <Link to={this.appRelativePath +"/cadastro/cidadao"} className="btn btn-round btn-md bg-success">
                                                         Cadastrar
                                                     </Link>

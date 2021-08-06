@@ -1,9 +1,10 @@
 import React from "react";
 import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { withRouter, Link } from "react-router-dom";
 import cidadaoService from "service/cidadaoService";
+//import usuarioService from "service/usuarioService";
 //import ModalCadastrarLocalVacinacao from "./ModalCadastrarLocalVacinacao";
-//import ModalEditarLocalVacinacao from "./ModalEditarLocalVacinacao";
-import { withRouter } from "react-router-dom";
+import ModalEditarCidadao from "./ModalEditarCidadao";
 import queryString from "query-string";
 
 // reactstrap components
@@ -15,6 +16,7 @@ const itensPorPagina = 20;
 class GerenciamentoCidadao extends React.Component {
   constructor(props) {
     super(props);
+    this.appRelativePath = "/agenda"
     this.state = {
       cidadaos: [],
       controlePaginacao: {
@@ -93,9 +95,9 @@ class GerenciamentoCidadao extends React.Component {
     console.info("Pagina selecionada" + pagina);
   };
 
-  /* deletarLocalVacinacao = (id) => {
+  deletarCidadao = (id) => {
     this.setState({ aguardandoDados: true });
-    localVacinacaoService.deletarLocalVacinacao(id).then((resposta) => {
+    cidadaoService.deletarCidadao(id).then((resposta) => {
       if (resposta.resultado === "erro") {
         this.setState({
           mensagemRetorno: resposta.motivo,
@@ -108,9 +110,9 @@ class GerenciamentoCidadao extends React.Component {
           aguardandoDados: false,
         });
       }
-      this.carregarLocaisVacinacao();
+      this.carregarCidadaos();
     });
-  }; */
+  };
 
   componentDidMount() {
     this.carregarCidadaos();
@@ -137,7 +139,7 @@ class GerenciamentoCidadao extends React.Component {
                             <th></th>
                             <th>Nome Completo</th>
                             <th>Data de Nascimento</th>
-                            {/* <th>Opções</th> */}
+                            <th>Opções</th>
                           </tr>
                         </thead>
 
@@ -147,52 +149,89 @@ class GerenciamentoCidadao extends React.Component {
                               <td>{index + 1}</td>
                               <td>{cidadao.nome_completo}</td>
                               <td>{cidadao.data_nascimento}</td>
-                              {/* <td>
+                              <td>
                                 <Row>
-                                  <ModalEditarLocalVacinacao
-                                    localId={local.cod_cnes}
-                                    carregarLocaisVacinacao={this.carregarLocaisVacinacao}
-                                    localVacinacao={local}
-                                  ></ModalEditarLocalVacinacao>
+                                  <ModalEditarCidadao
+                                    cidadaoId={cidadao.cidadao_id}
+                                    carregarCidadao={this.carregarCidadao}
+                                    cidadao={cidadao}
+                                  ></ModalEditarCidadao>
                                   <Col>
-                                    <Button color="danger" onClick={() => this.deletarLocalVacinacao(local.cod_cnes)}>
+                                    <Button
+                                      color="danger"
+                                      onClick={
+                                        () => {console.log(cidadao);
+                                          this.deletarCidadao( 
+                                            cidadao.cidadao_id
+                                          ) }
+                                      }
+                                    >
                                       Deletar
                                     </Button>
                                   </Col>
                                 </Row>
-                              </td> */}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </Table>
-                        <div className="flex-center">
-                          <Pagination className="flex-center">
-                            <PaginationItem>
-                              <PaginationLink first href="?page=1" />
-                            </PaginationItem>
-                            {[...Array(this.state.controlePaginacao.pageLimit)].map((page, i) => {
-                              if (i >= this.state.controlePaginacao.start && i < this.state.controlePaginacao.end) {
-                                return (
-                                  <PaginationItem active={i === this.state.controlePaginacao.paginaAtual} key={i}>
-                                    <PaginationLink onClick={(event) => this.atualizarPagina(event, i)} href={"?page="+ i}>
-                                      {i}
-                                    </PaginationLink>
-                                  </PaginationItem>
-                                );
+                      <div className="flex-center">
+                        <Pagination className="flex-center">
+                          <PaginationItem>
+                            <PaginationLink first href="?page=1" />
+                          </PaginationItem>
+                          {[
+                            ...Array(this.state.controlePaginacao.pageLimit),
+                          ].map((page, i) => {
+                            if (
+                              i >= this.state.controlePaginacao.start &&
+                              i < this.state.controlePaginacao.end
+                            ) {
+                              return (
+                                <PaginationItem
+                                  active={
+                                    i ===
+                                    this.state.controlePaginacao.paginaAtual
+                                  }
+                                  key={i}
+                                >
+                                  <PaginationLink
+                                    onClick={(event) =>
+                                      this.atualizarPagina(event, i)
+                                    }
+                                    href={"?page=" + i}
+                                  >
+                                    {i}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              );
+                            }
+                          })}
+                          <PaginationItem>
+                            <PaginationLink
+                              last
+                              href={
+                                "?page=" +
+                                parseInt(
+                                  this.state.controlePaginacao.pagesCount - 1
+                                )
                               }
-                            })}
-                            <PaginationItem>
-                              <PaginationLink last href={"?page=" + parseInt(this.state.controlePaginacao.pagesCount - 1)} />
-                            </PaginationItem>
-                          </Pagination>
-                        </div>
+                            />
+                          </PaginationItem>
+                        </Pagination>
+                      </div>
                     </div>
                   )}
-                  {/* <Row>
+                  <Row>
                     <Col className="col-4 offset-4">
-                      <ModalCadastrarLocalVacinacao carregarCidadaos={this.carregarCidadaos}></ModalCadastrarLocalVacinacao>
+                      <Link
+                        to={this.appRelativePath + "/cadastro/cidadao"}
+                        className="btn btn-round btn-md bg-success"
+                      >
+                        Adicionar
+                      </Link>
                     </Col>
-                  </Row> */}
+                  </Row>
                 </CardBody>
               </Card>
             </Col>

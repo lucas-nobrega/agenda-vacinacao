@@ -38,7 +38,7 @@ var routes = [
     icon: "nc-icon nc-sound-wave",  
     component: GrupoAtendimento,
     layout: appRelativePath,
-    //permissions: ['medico', 'medicoadm'],
+    permissions: ['admin'],
   },
   {
     path: "/cidadaos",
@@ -46,7 +46,7 @@ var routes = [
     icon: "nc-icon nc-circle-10",
     component: GerenciamentoCidadao,
     layout: appRelativePath,
-    //permissions: ['medico', 'medicoadm'],
+    permissions: ['admin',],
   },
   {
     path: "/cadastro/localvacinacao",
@@ -54,7 +54,7 @@ var routes = [
     icon: "nc-icon nc-paper",
     component: LocalVacinacao,
     layout: appRelativePath,
-    //permissions: ['cidadao'],
+    permissions: ['admin'],
   },
   
   {
@@ -63,7 +63,7 @@ var routes = [
     icon: "nc-icon nc-briefcase-24",
     component: AgendamentoVacinacao,
     layout: appRelativePath,
-    //permissions: ['medico', 'medicoadm'],
+    permissions: ['admin'],
   },
    // Rotas do Template ## RERVISAR
   {
@@ -80,6 +80,7 @@ var routes = [
     icon: "nc-icon nc-single-02",
     component: AgendarVacinacao,
     layout: appRelativePath,
+    permissions: ['cidadao'],
   },
 ];
 export default routes;

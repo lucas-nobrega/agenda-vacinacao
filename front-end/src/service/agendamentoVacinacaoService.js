@@ -9,12 +9,16 @@ const agendamentoVacinacaoService = {
       const response = await api.get('agendamento-vacinacao/', { params: { format: "json"}});
       return response;
    },
-   async deletarAgendamentoVacinacao(id) {
-      return api.delete('agendamento-vacinacao/' + id)
-         .then(response => response)
-   },  
    async cadastroAgendamentoVacinacao(dados_cadastrais) {
       return api.post('agendamento-vacinacao/', dados_cadastrais)
+         .then(response => response)
+         .catch(err =>{
+            return {"resultado" : "erro", "motivo" : "Erro ao requisitar os dados"};
+          }
+         )
+   },
+   async cancelarAgendamentoVacinacao(agendamentoId) {
+      return api.post('agendamento-vacinacao/' + agendamentoId + "/cancelar/")
          .then(response => response)
          .catch(err =>{
             return {"resultado" : "erro", "motivo" : "Erro ao requisitar os dados"};

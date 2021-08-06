@@ -7,7 +7,6 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
 } from 'react-native';
 
@@ -22,12 +21,12 @@ export default class Login extends Component {
     this.setState({[state]: value})
   }
   verLogin = async() =>{    
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('jwt');
     if(token){
       this.props.navigation.navigate('Agendamentos')
     }
   }
-  doLogin(){//admin@localhost
+  doLogin(){
     const {username, password} = this.state; 
     const req ={      
         'email': username, 
@@ -36,8 +35,8 @@ export default class Login extends Component {
     axios.post('http://192.168.0.165:8000/api/token/',req) 
     .then(
       res => {
-        console.log(res);
-        AsyncStorage.setItem('token',res.data.access)
+        console.log("LogiiEdimar",res.data);
+        AsyncStorage.setItem('jwt',res.data.access)
           .then(
             res => {
               this.props.navigation.navigate('Agendamentos')
@@ -52,7 +51,7 @@ export default class Login extends Component {
   }
 
   render() {
-    const {username, password,loading} = this.state;
+    const {username, password} = this.state;
     return (
       <View style={styles.container}>
         <Image style={styles.image} source={require('../images/logo.png')} />
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    backgroundColor: '#FFC0CB',
+    backgroundColor: '#FFD890',
     borderRadius: 30,
     width: '70%',
     height: 45,
@@ -135,6 +134,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 40,
-    backgroundColor: '#FF1493',
+    backgroundColor: '#FFBC40',
   },
 });

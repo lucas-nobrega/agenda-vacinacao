@@ -72,6 +72,11 @@ const usuarioSlice = createSlice({
             "is_superuser": action.payload.data.is_superuser,
             "id": action.payload.data.id
          };
+         if(action.payload.data.is_staff) {
+            state.perfis.push("admin")
+         } else {
+            state.perfis.push("cidadao")
+         }
       },
       [loginAction.rejected]: (state, action) => {
          state.aguardandoRegistro = false;
@@ -91,6 +96,7 @@ const usuarioSlice = createSlice({
       },
       [logoutAction.rejected]: (state, action) => {
          localStorage.removeItem("jwt")
+         // implementar remover do cookie
          state.logado = false;
          state.dados = {};
       },
@@ -106,6 +112,11 @@ const usuarioSlice = createSlice({
                   "is_superuser": action.payload.data.is_superuser,
                   "id": action.payload.data.id
                };
+               if(action.payload.data.is_staff) {
+                  state.perfis.push("admin")
+               } else {
+                  state.perfis.push("cidadao")
+               }
                return;
             }
          }

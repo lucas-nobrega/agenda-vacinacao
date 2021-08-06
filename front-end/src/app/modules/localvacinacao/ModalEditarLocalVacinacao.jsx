@@ -10,7 +10,6 @@ import {
 } from 'reactstrap';
 
 class ModalEditarLocalVacinacao extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -26,20 +25,38 @@ class ModalEditarLocalVacinacao extends React.Component {
         }
     }
 
-    editarLocalVacinacao = (event) => {
+    tratarEdicao = (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
         this.setState({ aguardandoEnvio: true});
-        console.log(data.idade_minima)
-        const dados = {
-            nome: data.get("nome"),
-            idade_minima: data.get("idade_minima"),
+        const dados_cadastrais = {
+            vlr_latitude: data.get("latitude"),
+            vlr_longitude: data.get("longitude"),
+            cod_munic: data.get("municipio"),
+            cod_cnes: this.props.localVacinacao.cod_cnes,
+            nom_estab: data.get("estabelecimento"),
+            dsc_endereco: data.get("endereco"),
+            dsc_bairro: data.get("bairro"),
+            dsc_cidade: data.get("cidade"),
         };
-        console.log(dados.idade_minima)
-        localVacinacaoService.editarLocalVacinacao(dados, this.props.localVacinacao.grupo_id).then((resposta) => {
-            this.props.carregarGruposAtendimento();
-            /* this.getNomeDoenca(this.props.doencaId); */
-            this.toggle();
+        localVacinacaoService.editarLocalVacinacao(dados_cadastrais, this.props.localVacinacao.cod_cnes).then((resposta) => {
+            this.setState({ aguardandoEnvio: false });
+            console.info("err" + resposta)
+            if (resposta.resultado === "erro") {
+                this.setState({
+                    mensagemRetorno: resposta.motivo,
+                    tipoMensagem: "danger",
+                });
+            } else {
+                this.props.carregarLocaisVacinacao();
+                this.setState({
+                    mensagemRetorno: "",
+                   // tipoMensagem: "success",
+                    dadosCadastrados: true,
+                    aguardandoEnvio: true
+                });
+                this.toggle();
+            }
         });
     }
 
@@ -49,11 +66,12 @@ class ModalEditarLocalVacinacao extends React.Component {
             setModal: !this.state.modalsetModal
         });
     }
-    /* getNomeDoenca = (id) => {
+
+    /*getNomeDoenca = (id) => {
         doencaService.getDoenca(id).then((resposta) => {
             this.setState({doenca: resposta.data});
         });
-    } */
+    }*/
 
     componentDidMount() {
         //this.getNomeDoenca(this.props.doencaId);
@@ -65,29 +83,92 @@ class ModalEditarLocalVacinacao extends React.Component {
                 <Form inline onSubmit={(e) => e.preventDefault()}>
                     <Button style={{ marginRight: '5px' }} color="primary" onClick={this.toggle}>Editar</Button>
                 </Form>
-                <Modal size="sm" isOpen={this.state.modal} toggle={this.toggle} unmountOnClose={this.unmountOnClose}>
-                    <ModalHeader>Editar Grupo de Atendimento</ModalHeader>
+                <Modal size="" isOpen={this.state.modal} toggle={this.toggle} unmountOnClose={this.unmountOnClose}>
+                    <ModalHeader>Editar Local de Vacinação</ModalHeader>
                     <ModalBody>
                         <div className="content">
                             <CardBody>
                                 {
-                                    <Form onSubmit={(e) => this.editarlocalVacinacao(e)}>
+                                    <Form onSubmit={(e) => this.tratarEdicao(e)}>
                                         <Row>
                                             <Col>
                                                 <FormGroup>
-                                                    <Label for="exampleSelect">Nome do Grupo de Atendimento</Label>
+                                                    <Label for="exampleSelect">Latitude</Label>
                                                     <Input
-                                                        name="nome"
-                                                        placeholder="Digite o nome do grupo"
-                                                        type="text"
-                                                        defaultValue={this.state.localVacinacao.nome}
+                                                        name="latitude"
+                                                        placeholder="Informe a latitude"
+                                                        type="number"
+                                                        defaultValue={this.state.localVacinacao.vlr_latitude}
                                                     />
-                                                    <Label for="exampleSelect">Idade Mínima do Grupo de Atendimento</Label>
+                                                </FormGroup>
+                                            </Col>
+                                            <Col>
+                                                <FormGroup>
+                                                    <Label for="exampleSelect">Longitude</Label>
                                                     <Input
-                                                        name="idade_minima"
-                                                        placeholder="Digite a idade mínima do grupo"
+                                                        name="longitude"
+                                                        placeholder="Informe a longitude"
+                                                        type="number"
+                                                        defaultValue={this.state.localVacinacao.vlr_longitude}
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                            <Col>
+                                                <FormGroup>
+                                                    <Label for="exampleSelect">Municipio</Label>
+                                                    <Input
+                                                        name="municipio"
+                                                        placeholder="Informe o codigo do municipio"
+                                                        type="number"
+                                                        defaultValue={this.state.localVacinacao.cod_munic}
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <FormGroup>
+                                                    <Label for="exampleSelect">Nome</Label>
+                                                    <Input
+                                                        name="estabelecimento"
+                                                        placeholder="Informe o nome do local"
                                                         type="text"
-                                                        defaultValue={this.state.localVacinacao.idade_minima}
+                                                        defaultValue={this.state.localVacinacao.nom_estab}
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                            <Col>
+                                                <FormGroup>
+                                                    <Label for="exampleSelect">Endereço</Label>
+                                                    <Input
+                                                        name="endereco"
+                                                        placeholder="Informe o endereço do local"
+                                                        type="text"
+                                                        defaultValue={this.state.localVacinacao.dsc_endereco}
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <FormGroup>
+                                                    <Label for="exampleSelect">Bairro</Label>
+                                                    <Input
+                                                        name="bairro"
+                                                        placeholder="Informe o bairro do local"
+                                                        type="text"
+                                                        defaultValue={this.state.localVacinacao.dsc_bairro}
+                                                    />
+                                                </FormGroup>
+                                            </Col>
+                                            <Col>
+                                                <FormGroup>
+                                                    <Label for="exampleSelect">Cidade</Label>
+                                                    <Input
+                                                        name="cidade"
+                                                        placeholder="Informe a cidade do local"
+                                                        type="text"
+                                                        defaultValue={this.state.localVacinacao.dsc_cidade}
                                                     />
                                                 </FormGroup>
                                             </Col>

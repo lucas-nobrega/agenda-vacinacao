@@ -66,4 +66,4 @@ class AgendamentoVacinacao(models.Model):
         Cidadao, on_delete=models.PROTECT)
 
     def __str__(self) -> str:
-        return f"{self.cidadao.nome_completo} ({self.cidadao.user.email}) - {self.data} - {self.hora}"
+        return f"{self.cidadao.nome_completo} ({self.cidadao.user.email}) - {self.data} - {self.hora} - {self.get_status_display()}"

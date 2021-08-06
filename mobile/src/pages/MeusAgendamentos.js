@@ -1,162 +1,104 @@
-import * as React from 'react';
-import { View, Text,StyleSheet,TouchableOpacity,Alert,Button  } from 'react-native';
+import React, {Component} from 'react';
+import { View, Text, Button } from 'react-native';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import { DataTable } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'; 
-import { DataTable } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Ionicons';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import * as Print from 'expo-print';
-import * as MediaLibrary from "expo-media-library";
-import * as Sharing from "expo-sharing";
+import AuthloadingLogin from './AuthloadingLogin'
 
 
-export default class DetailsScreen extends React.Component {
-  constructor() {
-    super();
-    this.verLogin();
-  }
 
- 
-  createPDF = async () => {
-    const htmlContentt = '<!DOCTYPE html> <html lang="en"><head><meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Pdf Content</title></head><body><h1>Hello, UppLabs!</h1> </body></html>';
- 
-    console.log("dsfsd22");
-    try {
-      const { uri } = await Print.printToFileAsync({ htmlContentt });
-      if (Platform.OS === "ios") {
-        await Sharing.shareAsync(uri);
-      } else {
-        const permission = await MediaLibrary.requestPermissionsAsync();
-        if (permission.granted) {
-          await MediaLibrary.createAssetAsync(uri);
-        }
-      }
-    } catch (error) {
-      console.log("dsfsd2fff2");
-      console.error(error);
-    }
+const print = async (local, data, status) => {
+  let options = {
+    html: '<h1>Comprovante de '+status+'</h1><h3>Status : '+status+'</h3><h3>Local : '+local+'</h3><h3>Data : '+data+'</h3>',
+    fileName: 'Comprovante',
+    directory: 'Documents', 
+  };
+
+  let file = await RNHTMLtoPDF.convert(options)
+  console.log(file.filePath);
+  alert("O comprovante foi baixado e encontra-se na pasta 'Documents' de seus aplicativo");
+
 }
 
-  logout = async () => {
-    const token = await AsyncStorage.removeItem('token');
-    if (!token) {
-      this.props.navigation.navigate('Home')
-    }
+export default class MeusAgendamentos extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      meusagendamentos: [],
+      aguardandoDados: false      
+    };
+    this.getMeusAgendamentos();
   }
- 
- 
-  verLogin = async () => {    
-    const token = await AsyncStorage.getItem('token');
-    if (!token) {
-      console.log("edimarHometoken", token);
-      this.props.navigation.navigate('home')
-    }
-  }
-  getAgendamentos(){//admin@localhost
-    const {username, password} = this.state;
-    const req ={      
-        'email': username, 
-        'password': password     
-    }
-    axios.post('http://localhost:8000/api/token/',req)
-    .then(
+  
+
+  getMeusAgendamentos = async() =>{    
+  const token = await AsyncStorage.getItem('jwt');
+    const headers= {
+      'Content-Type' : 'application/json', 
+       'Authorization' : 'Bearer ' + token
+      }  
+    let url = 'http://192.168.0.165:8000/api/v1/agendamento-vacinacao/';     
+    axios.get(url, {headers: headers} ) 
+    .then(      
       res => {
-        console.log(res);
-        AsyncStorage.setItem('token',res.data.access)
-          .then(
-            res => {
-              this.props.navigation.navigate('Agendamentos')
-            }
-          )
-        
+        this.setState({aguardandoDados: true})
+        this.setState({meusagendamentos: res.data.results})           
       },
       err => {
-        alert("A senha ou usuários estão incorretos");
+        console.log(err); 
+        alert("Não existe agendamento para este usuário");
       }
-    ) 
-  }
-
-  render() {
-    return (
-
-      <View  style={styles.container}>
-<TouchableOpacity
-          style={styles.loginBtn}
-          onPress= { () => this.logout()}          
-          >
-          <Text style={styles.loginText}>Sair da aplicação</Text>
-        </TouchableOpacity>
-        
-        <DataTable>
-      <DataTable.Header>
-        <DataTable.Title>Descrição</DataTable.Title>
-        <DataTable.Title >Data</DataTable.Title>
-        <DataTable.Title >Imprimir comprovante</DataTable.Title>
-      </DataTable.Header>
-
-      <DataTable.Row>
-        <DataTable.Cell>Vacindo</DataTable.Cell>
-        <DataTable.Cell >20/01/2020</DataTable.Cell>
-        <DataTable.Cell  onPress= { () => this.createPDF()}   ><Icon name="print" size={30} color="#4F8EF7" /></DataTable.Cell>
-      </DataTable.Row>
-     
-      <DataTable.Row>
-        <DataTable.Cell>Agendado</DataTable.Cell>
-        <DataTable.Cell >20/01/2020</DataTable.Cell>
-        <DataTable.Cell onPress= { () => this.createPDF()}   ><Icon name="print" size={30} color="#4F8EF7" /></DataTable.Cell>
-      </DataTable.Row>
-      </DataTable>
-      </View>
-    );
-  }
-
-  
+    )  
 }
 
+getStatus(satus){
+  switch (satus) {
+    case 1:
+      return 'Agendado'
+    case 2:
+      return 'Cancelado'
+    case 3:
+      return 'Vaciando'
+    default:
+      console.log(`Sorry, we are out of ${satus}.`);
+  }
+}  
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  render() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      
+      
+      {!this.state.aguardandoDados && (<AuthloadingLogin/>)}
+                 
+     
+      {this.state.aguardandoDados && (
+        <Text>Meus agendamentos</Text>)}
+        <DataTable>
+        <DataTable.Header>
+          <DataTable.Title>Status</DataTable.Title>
+          <DataTable.Title>Local</DataTable.Title>
+          <DataTable.Title >Data</DataTable.Title>
+          <DataTable.Title >Ação</DataTable.Title>
+        </DataTable.Header>
+        
+        {this.state.meusagendamentos.map((agendamento, index) => (
+          <DataTable.Row>
+            <DataTable.Cell>{this.getStatus(agendamento.status)}</DataTable.Cell>
+        <DataTable.Cell>{agendamento.local_vacinacao.nom_estab}</DataTable.Cell>
+          <DataTable.Cell >{agendamento.data}</DataTable.Cell>
+          <DataTable.Cell ><Button
+            onPress={() => print(agendamento.local_vacinacao.nom_estab, agendamento.data, this.getStatus(agendamento.status))}
+            title="Imprimir"
+            color="blue"
+          /></DataTable.Cell>
+           </DataTable.Row>
+        ))}
+       
+      </DataTable>
+    </View>
+  );
+}
 
- 
-
-  inputView: {
-    backgroundColor: '#FFC0CB',
-    borderRadius: 30,
-    width: '70%',
-    height: 45,
-    marginBottom: 20,
-
-    alignItems: 'center',
-  },
-
-  TextInput: {
-    height: 50,
-    flex: 1,
-    padding: 10,
-    marginLeft: 20,
-  },
-
-  forgot_button: {
-    height: 30,
-    marginBottom: 30,
-  },
-
-  loginBtn: {
-    width: '20%',
-    borderRadius: 25,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 40,
-    backgroundColor: '#FF1493',
-  },
-});
-
-
-
-
+}

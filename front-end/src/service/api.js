@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookies from 'js-cookie'
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 function getRefreshToken() {
@@ -34,6 +35,7 @@ const api = axios.create({
    timeout: 5000,
    headers: {
       'Content-Type': 'application/json',
+      'X-CSRFToken': Cookies.get('csrftoken'),
       'Authorization': getAccessToken() != null ? 'Bearer ' + getAccessToken() : null
    }
 });

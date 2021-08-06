@@ -1,6 +1,4 @@
-//import medicoService from "services/medicoService";
-//import cidadaoService from "services/cidadaoService";
-//import acompanhamentoService from "services/acompanhamentoService";
+import agendamentoVacinacaoService from "service/agendamentoVacinacaoService";
 
 import Mapa from "./Mapa";
 import VerticalBar from "./../../estatisticas/componentes/VerticalBar";
@@ -19,69 +17,53 @@ class PaginaInicial extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            quantidadeMedicos: 0,
-            quantidadeCidadaos: 0,
-            quantidadeAcompanhamentos: 0,
+            quantidadeVacinados: 0,
+            quantidadeAgendados: 0,
+            quantidadeCancelados: 0,
             mensagemRetorno: "",
             aguardandoEnvio: true,
             tipoMensagem: "success",
         };
     }
 
-    /* async carregarDashboard(){
-        medicoService.getMedicosCount().then((resposta) => {
+   
+
+     async carregarDashboard(){
+         var countVacinado=0, countAgendado=0, countCancelado=0;
+        agendamentoVacinacaoService.getAgendamentosVacinacao().then((resposta) => {
+            console.log(resposta)
+            for (let i = 0; i < resposta.data.results.length; i++) {                
+                switch (resposta.data.results[i].status) {
+                    case 1:
+                        countAgendado++;
+                      break;
+                    case 2:
+                        countCancelado++;
+                      break;
+                    case 3:
+                        countVacinado++;
+                      break;    
+                  }
+              }
             this.setState({
-                quantidadeMedicos: resposta.quantidade,
-            });
-        });
-        acompanhamentoService.getAcompanhamentosCount().then((resposta) => {
-            this.setState({
-                quantidadeAcompanhamentos: resposta.quantidade,
-            });
-        });
-        cidadaoService.getCidadaosCount().then((resposta) => {
-            this.setState({
-                quantidadeCidadaos: resposta.quantidade,
                 aguardandoEnvio: false,
+                quantidadeVacinados: countVacinado,
+                quantidadeAgendados: countAgendado,
+                quantidadeCancelados: countCancelado
             });
-        });
-    }; */
+        });       
+    }; 
 
     componentDidMount() {
-        //this.carregarDashboard();
+        this.carregarDashboard();
     }
+
+  
     render() {
         return (
             <>
                 <div className="content">
                     <Row xs="1" md="2" sm="2">
-                        <Col className="col-xl-4">
-                            <Card className="card-stats">
-                                <CardBody>
-                                    <Row>
-                                        <Col md="4" xs="5">
-                                            <div className="icon-big text-center icon-warning">
-                                                <i className="nc-icon nc-single-02 text-warning" />
-                                            </div>
-                                        </Col>
-                                        <Col md="8" xs="7">
-                                            <div className="numbers">
-                                                <p className="card-category">
-                                                    Cidadãos
-                                                </p>
-                                                <CardTitle tag="p">
-                                                    {!this.state
-                                                        .aguardandoEnvio &&
-                                                        this.state
-                                                            .quantidadeCidadaos}
-                                                </CardTitle>
-                                                <p />
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </CardBody>
-                            </Card>
-                        </Col>
                         <Col className="col-xl-4">
                             <Card className="card-stats">
                                 <CardBody>
@@ -94,13 +76,13 @@ class PaginaInicial extends React.Component {
                                         <Col md="8" xs="7">
                                             <div className="numbers">
                                                 <p className="card-category">
-                                                    Acompanhamentos feitos
+                                                    Quantidade de vacinados
                                                 </p>
                                                 <CardTitle tag="p">
                                                     {!this.state
                                                         .aguardandoEnvio &&
                                                         this.state
-                                                            .quantidadeAcompanhamentos}
+                                                            .quantidadeVacinados}
                                                 </CardTitle>
                                                 <p />
                                             </div>
@@ -115,19 +97,46 @@ class PaginaInicial extends React.Component {
                                     <Row>
                                         <Col md="4" xs="5">
                                             <div className="icon-big text-center icon-warning">
-                                                <i className="nc-icon nc-badge text-danger" />
+                                                <i className="nc-icon nc-calendar-60 text-primary" />
                                             </div>
                                         </Col>
                                         <Col md="8" xs="7">
                                             <div className="numbers">
                                                 <p className="card-category">
-                                                    Medicos
+                                                    Agendamentos feitos
                                                 </p>
                                                 <CardTitle tag="p">
                                                     {!this.state
                                                         .aguardandoEnvio &&
                                                         this.state
-                                                            .quantidadeMedicos}
+                                                            .quantidadeAgendados}
+                                                </CardTitle>
+                                                <p />
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col className="col-xl-4">
+                            <Card className="card-stats">
+                                <CardBody>
+                                    <Row>
+                                        <Col md="4" xs="5">
+                                            <div className="icon-big text-center icon-danger">
+                                                <i className="nc-icon nc-simple-remove text-danger" />
+                                            </div>
+                                        </Col>
+                                        <Col md="8" xs="7">
+                                            <div className="numbers">
+                                                <p className="card-category">
+                                                    Agendamentos cancelados
+                                                </p>
+                                                <CardTitle tag="p">
+                                                    {!this.state
+                                                        .aguardandoEnvio &&
+                                                        this.state
+                                                            .quantidadeCancelados}
                                                 </CardTitle>
                                                 <p />
                                             </div>
@@ -137,11 +146,7 @@ class PaginaInicial extends React.Component {
                             </Card>
                         </Col>
                     </Row>
-                    <Row>
-                      <Col className="col-xl-9 col-lg-10 col-12 offset-xl-2 offset-lg-1 offset-lg-2 justify-content-center">
-                          <Mapa></Mapa>
-                      </Col>
-                    </Row>
+                    
                     <hr/>
                     {/*
                     <Row>

@@ -15,8 +15,18 @@ GET {{api_url}}/local-vacinacao
 ###
 GET {{api_url}}/cidadao
 
-###
-//GET {{api_url}}/cidadao-agendamento/?cidadao_id=dc74d025-aae7-45b9-9643-7a370bfb5e40
+### Cadastro de usuario
+# @name cadastroUsuario
+POST {{base_url}}/cadastro/
+content-type: application/json
+
+{
+   "email" : "joaopedroalubefrto@localhost",
+   "password" : "teste123",
+   "password2" : "teste123",
+   "data_nascimento" : "2021-08-03",
+   "nome_completo": "Pedro da Silva"
+}
 
 
 ### Atenticar o admin utilizando JWT
@@ -58,14 +68,22 @@ content-type: application/json
 }
 
 ### Pegar dados do usuário logado
+# @name dadosUsuarioLogado
 @authTokenUsuario = {{loginUsuario.response.body.access}}
 GET {{base_url}}/api/verlogin/
 Content-Type: application/json
 Authorization: Bearer {{authTokenUsuario}}
 
+###
+# @name pegarPrimeiroGrupo
+GET {{api_url}}/grupo-atendimento
+Content-Type: application/json
+
 
 ###
 @authTokenUsuario = {{loginUsuario.response.body.access}}
+@idCidadao = {{dadosUsuarioLogado.response.body.cidadao_id}}
+@idPrimeiroGrupo = {{pegarPrimeiroGrupo.response.body.$[0].grupo_id}}
 POST {{base_url}}/api/v1/agendamento-vacinacao/ HTTP/1.1
 content-type: application/json
 Authorization: Bearer {{authTokenUsuario}}
@@ -74,12 +92,10 @@ Authorization: Bearer {{authTokenUsuario}}
    "status": 1, 
    "hora": "10:22:00",
    "data": "2021-08-11",
-   //"data_cadastro": "2021-07-31 19:22:46.499631-03",
-   "cidadao_id": "dc74d025-aae7-45b9-9643-7a370bfb5e40", 
-   "grupo_atendimento_id": "47d26477-585f-48dd-86b3-483074959575",
-   "local_vacinacao_id": "2546930"
+   "cidadao": "{{idCidadao}}", 
+   "grupo_atendimento": "{{idPrimeiroGrupo}}",
+   "local_vacinacao": "2546930"
 }
-
 
 ### Pegar locais próximos
 GET {{api_url}}/local-vacinacao-proximos/?latitude=-5.8294272&longitude=-35.2026624
@@ -87,3 +103,70 @@ GET {{api_url}}/local-vacinacao-proximos/?latitude=-5.8294272&longitude=-35.2026
 GET {{base_url}}/api/v1/agendamento-vacinacao/6bca8cb2-332f-4478-a40a-ade2186acb03 
 ### Pegar locais
 GET {{api_url}}/local-vacinacao/?format=json&page=1
+
+### Cadastrando Local de Vacinação
+@authTokenAdmin = {{login.response.body.access}}
+POST {{base_url}}/api/v1/local-vacinacao/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{authTokenAdmin}}
+
+{
+   "vlr_latitude": 50.0,
+   "vlr_longitude": 50.0,
+   "cod_munic": "2408102",
+   "cod_cnes": "123456896834236",
+   "nom_estab": "teste",
+   "dsc_endereco": "testando",
+   "dsc_bairro": "testando",
+   "dsc_cidade": "testando"
+}
+
+### Editar Local de Vacinação
+@authTokenAdmin = {{login.response.body.access}}
+PUT {{base_url}}/api/v1/local-vacinacao/12345689683423654/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{authTokenAdmin}}
+
+{
+   "vlr_latitude": 65.0,
+   "vlr_longitude": 72.0,
+   "cod_munic": "2408102",
+   "cod_cnes": "123456896834236",
+   "nom_estab": "Pração de São José",
+   "dsc_endereco": "Rua agata - potilandia",
+   "dsc_bairro": "Lagoa Nova",
+   "dsc_cidade": "Natal"
+}
+
+### Pegar agendamento do usuario logado
+@authTokenUsuario = {{loginUsuario.response.body.access}}
+GET {{api_url}}/agendamento-vacinacao/
+content-type: application/json
+Authorization: Bearer {{authTokenUsuario}}
+
+### Pegar agendamento do usuario admin
+@authTokenAdmin = {{login.response.body.access}}
+GET {{api_url}}/agendamento-vacinacao/
+content-type: application/json
+Authorization: Bearer {{authTokenAdmin}}
+
+### Cancelar um agendamento do usuário
+@authTokenUsuario = {{loginUsuario.response.body.access}}
+POST  {{api_url}}/agendamento-vacinacao/0c34db93-1b4b-4b88-9623-aa7986af8934/cancelar/
+content-type: application/json
+Authorization: Bearer {{authTokenUsuario}}
+
+### Cancelar um agendamento que não é do usuário (Erro esperado)
+@authTokenUsuario = {{loginUsuario.response.body.access}}
+POST {{api_url}}/agendamento-vacinacao/f8cafc76-dbf9-4e8d-8d8b-a013d38217cb/cancelar/
+content-type: application/json
+Authorization: Bearer {{authTokenUsuario}}
+
+
+###
+@authTokenAdmin = {{login.response.body.access}}
+//@idCidadao = {{dadosUsuarioLogado.response.body.cidadao_id}}
+//@idPrimeiroGrupo = {{pegarPrimeiroGrupo.response.body.$[0].grupo_id}}
+DELETE {{base_url}}/api/v1/cidadao/6e4ae566-a503-458f-9cf9-4cf1037b3c5e/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{authTokenAdmin}}

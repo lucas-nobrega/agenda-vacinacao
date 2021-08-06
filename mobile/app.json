@@ -1,37 +1,4 @@
 {
-  "expo": {
-    "name": "Agenda Vacina",
-    "slug": "mobile",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "package": "com.lucas.agendavacina",
-      "versionCode": 1,
-      "permissions": ["MAPS_RECEIVE","ACCESS_LOCATION_EXTRA_COMMANDS", "ACCESS_FINE_LOCATION","CAMERA", "WRITE_EXTERNAL_STORAGE","READ_EXTERNAL_STORAGE", "CAMERA_ROLL","INTERNET","ACCESS_NETWORK_STATE" ],
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+  "name": "mobile",
+  "displayName": "mobile"
 }
-
-

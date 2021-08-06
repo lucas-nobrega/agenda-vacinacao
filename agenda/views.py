@@ -1,12 +1,11 @@
-from django.contrib.auth.models import User
-from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.shortcuts import render
 from agenda.models import GrupoAtendimento, LocalVacinacao, AgendamentoVacinacao, Cidadao
 from agenda.serializers import GrupoAtendimentoSerializer, LocalVacinacaoSerializer, AgendamentoVacinacaoSerializer, CidadaoSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from datetime import date
+from rest_framework.decorators import action
+from rest_framework import serializers
 
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -26,6 +25,14 @@ class CidadaoViewSet(viewsets.ModelViewSet):
     serializer_class = CidadaoSerializer
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
+    def post(self, request, format=None):
+        logger.warning(request.data)
+        serializer = CidadaoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GrupoAtendimentoViewSet(viewsets.ModelViewSet):
     pagination_class = None
@@ -41,50 +48,58 @@ class LocalVacinacaoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
 
-
 class AgendamentoVacinacaoViewSet(viewsets.ModelViewSet):
     #pagination_class = None
     #queryset = AgendamentoVacinacao.objects.all()
     serializer_class = AgendamentoVacinacaoSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if(self.request.user.is_staff):
+            queryset = AgendamentoVacinacao.objects.all()
+        else:
+            cidadao = Cidadao.objects.filter(user=self.request.user)[0]
+            queryset = AgendamentoVacinacao.objects.filter(cidadao=cidadao)
 
-        queryset = AgendamentoVacinacao.objects.all()
-        #logger.warning(queryset)
         return queryset
 
-    def create(self, request, *args, **kwargs):  # Sobrescreve o create do CRUD
-        usuario = request.user
-        agendamento = AgendamentoVacinacao()
-        #logger.warning("-------------TESTE-------------")
-        #queryset = self.get_queryset()
-        #logger.warning(queryset)
-        cidadao = Cidadao.objects.get(
-            cidadao_id=request.data.get('cidadao_id'))
-        born = cidadao.data_nascimento
-        today = date.today()   
-        idade_cidadao = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
-        #logger.warning(idade_cidadao)
+    @action(detail=True, methods=['POST'], name='Cancelar Agendamento')
+    def cancelar(self, request, pk=None):
+        try:
+            uuid = serializers.UUIDField().to_internal_value(data=pk)
+            try:
+                agendamento = AgendamentoVacinacao.objects.get(pk=pk)
+                if((agendamento.cidadao.user != request.user) | (agendamento.cidadao.user.is_staff == False)):
+                    return Response({
+                        "resultado":  "erro",
+                        "motivo": "O agendamento não pertence ao usuário logado ou o usuário não é admin"
+                    })
+                elif(agendamento.status == AgendamentoVacinacao.opcoes.CANCELADO):
+                    return Response({
+                        "resultado":  "erro",
+                        "motivo": "O agendamento já está cancelado"
+                    })
+                elif(agendamento.status == AgendamentoVacinacao.opcoes.VACINADO):
+                    return Response({
+                        "resultado":  "erro",
+                        "motivo": "A vacinação já ocorreu"
+                    })
+                else:
+                    agendamento.status = AgendamentoVacinacao.opcoes.CANCELADO
+                    agendamento.save()
+                    return Response({"resultado":  "sucesso"})
 
-        agendamento.hora = request.data.get('hora') # dados do JSON recebido
-        agendamento.data = request.data.get('data')
-        #idade = request.data.get('cidadao_id')
-        agendamento.idade = idade_cidadao
-        agendamento.status = request.data.get('status')
-        agendamento.local_vacinacao = LocalVacinacao.objects.get(
-            cod_cnes=request.data.get('local_vacinacao_id'))
-        agendamento.cidadao = Cidadao.objects.get(
-            cidadao_id=request.data.get('cidadao_id'))
-        agendamento.grupo_atendimento = GrupoAtendimento.objects.get(
-            grupo_id=request.data.get('grupo_atendimento_id'))
-        agendamento.save()
-        # verificar todos os agendamentos de um usuario se a quantidade de status agendado <= 1? + vacinado <=? > 2
-        serializer = AgendamentoVacinacaoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except AgendamentoVacinacao.DoesNotExist:
+                return Response({
+                    "resultado":  "erro",
+                    "motivo": "O agendamento não foi encontrado"
+                })
+        except:
+            return Response({
+                "resultado":  "erro",
+                "motivo": "O código do agendamento não é válido: " + pk
+            })
+
 
 class CidadaoAgendamentoViewSet(viewsets.ModelViewSet):
     #pagination_class = None
@@ -94,14 +109,10 @@ class CidadaoAgendamentoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         #queryset = AgendamentoVacinacao.objects.all()
-        #logger.warning(queryset)
+        # logger.warning(queryset)
         cidadao_id = self.request.query_params.get('cidadao_id')
         agendamentos = AgendamentoVacinacao.objects.all().filter(cidadao_id=cidadao_id)
         return agendamentos
-        
-
-
-
 
 
 class LocalVacinacaoProximoViewSet(viewsets.ModelViewSet):
@@ -118,4 +129,3 @@ class LocalVacinacaoProximoViewSet(viewsets.ModelViewSet):
         return LocalVacinacao.objects.all().filter(
             vlr_latitude__gte=(latitude-distancia), vlr_latitude__lte=(latitude+distancia)).filter(
             vlr_longitude__gte=(longitude-distancia), vlr_longitude__lte=(longitude+distancia))
-       
