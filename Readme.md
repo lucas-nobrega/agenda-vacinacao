@@ -17,6 +17,11 @@ criar banco no postgresql
 criar arquivo .env com base no arquivo .env-exemplo
 ```
 
+Importar locais de vacinação na pasta datasets
+```
+Locais de vacinação = http://repositorio.dados.gov.br/saude/unidades-saude/unidade-basica-saude/ubs.csv
+```
+
 Executar os seguintes comandos na pasta do projeto
 ```
 virtualenv venv
