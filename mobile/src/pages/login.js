@@ -32,10 +32,9 @@ export default class Login extends Component {
         'email': username, 
         'password': password     
     }
-    axios.post('http://192.168.0.165:8000/api/token/',req) 
+    axios.post('http://192.168.0.113:8000/api/token/',req) 
     .then(
       res => {
-        console.log("LogiiEdimar",res.data);
         AsyncStorage.setItem('jwt',res.data.access)
           .then(
             res => {

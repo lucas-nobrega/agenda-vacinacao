@@ -15,6 +15,8 @@ import {
   DropdownMenu,
   DropdownItem,
   Container,
+  Row,
+  Col,
 } from "reactstrap";
 
 import { logoutAction } from "../../usuario/usuario.slice";
@@ -54,7 +56,7 @@ class Header extends React.Component {
     });
   }
   getBrand() {
-    let brandName = "Default Brand";
+    let brandName = "Página Inicial";
     routes.map((prop, key) => {
       if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
         brandName = prop.name;
@@ -116,7 +118,7 @@ class Header extends React.Component {
           this.props.location.pathname.indexOf("full-screen-maps") !== -1
             ? "navbar-absolute fixed-top"
             : "navbar-absolute fixed-top " +
-            (this.state.color === "transparent" ? "navbar-transparent " : "")
+              (this.state.color === "transparent" ? "navbar-transparent " : "")
         }
       >
         <Container fluid>
@@ -133,7 +135,7 @@ class Header extends React.Component {
                 <span className="navbar-toggler-bar bar3" />
               </button>
             </div>
-            <NavbarBrand href="/">{this.getBrand()}</NavbarBrand>
+            <NavbarBrand href="/agenda/pagina_inicial">{this.getBrand()}</NavbarBrand>
           </div>
           <NavbarToggler onClick={this.toggle}>
             <span className="navbar-toggler-bar navbar-kebab" />
@@ -146,33 +148,52 @@ class Header extends React.Component {
             className="justify-content-end"
           >
             <Nav navbar>
-              {this.props.logado && (<>
-                <Dropdown
-                nav
-                isOpen={this.state.dropdownOpen}
-                toggle={(e) => this.dropdownToggle(e)}
-              >
-                <DropdownToggle caret nav>
-                  <i className="nc-icon nc-circle-10" />
-                  <p>
-                    <span className=" d-md-block">{this.props.nomeUsuario}</span>
-                  </p>
-                </DropdownToggle>
-                <DropdownMenu right>
-                {this.props.logado && (
-                  <DropdownItem tag="a" to={this.appRelativePath + "/pagina_inicial"} onClick={(e) => this.tratarLogout(e)}>
-                    Sair
-                  </DropdownItem>
-                  )}
-                </DropdownMenu>
-              </Dropdown>
-
+              {this.props.logado && (
+                <>
+                  <Dropdown
+                    nav
+                    isOpen={this.state.dropdownOpen}
+                    toggle={(e) => this.dropdownToggle(e)}
+                  >
+                    <DropdownToggle caret nav>
+                      <i className="nc-icon nc-circle-10" />
+                      <p>
+                        <span className=" d-md-block">
+                          {this.props.nomeUsuario}
+                        </span>
+                      </p>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      {this.props.logado && (
+                        <DropdownItem
+                          tag="a"
+                          to={this.appRelativePath + "/"}
+                          onClick={(e) => this.tratarLogout(e)}
+                        >
+                          Sair
+                        </DropdownItem>
+                      )}
+                    </DropdownMenu>
+                  </Dropdown>
                 </>
               )}
               <NavItem>
                 {!this.props.logado && (
-                  <Link to={this.appRelativePath + "/login"} className="nav-link btn-rotate">
+                  <Link
+                    to={this.appRelativePath + "/login"}
+                    className="nav-link btn-rotate"
+                  >
                     Entrar
+                  </Link>
+                )}
+              </NavItem>
+              <NavItem>
+                {!this.props.logado && (
+                  <Link
+                    to={this.appRelativePath + "/cadastro/cidadao"}
+                    className="nav-link btn-rotate"
+                  >
+                    Cadastrar-se
                   </Link>
                 )}
               </NavItem>

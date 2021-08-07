@@ -73,11 +73,6 @@ class AgendamentoVacinacao extends React.Component {
     });
   };
 
-
-
-
-
-
   statusAgendamento = {
     1: "Agendado",
     2: "Cancelado",
@@ -90,16 +85,50 @@ class AgendamentoVacinacao extends React.Component {
         this.atualizarControlePagina(this.state.controlePaginacao.paginaAtual, resposta.data.count);
         this.setState({ agendamentos: resposta.data.results, aguardandoDados: false });
     });
-  };
+  }; 
+  
+  cadastrarVacinacao = (agendamentoId) => {
+   console.info("Vacinada cadastrando para agendamento id: " + agendamentoId);
+   agendamentoVacinacaoService.cadastrarVacinacao(agendamentoId).then((resposta) => {
+     this.setState({ aguardandoEnvio: false });
+     console.info("err" + resposta);
+     if (resposta.resultado === "erro") {
+       // this.setState({
+       //   mensagemRetorno: resposta.motivo,
+       //   tipoMensagem: "danger",
+       //  });
+     } else {
+       this.setState({
+         mensagemRetorno: "",
+         // tipoMensagem: "success",
+         dadosCadastrados: true,
+         aguardandoEnvio: true,
+       });
+       this.carregarAgendamentosVacinacao();
+     }
+   });
+   };
 
   cancelarAgendamentoVacinacao = (agendamentoId) => {
     console.info("Cancelando agendamento id: " + agendamentoId);
-    /*
-    agendamentoVacinacaoService.getAgendamentosVacinacao().then((resposta) => {
-      this.carregarAgendamentosVacinacao();
+    agendamentoVacinacaoService.cancelarAgendamentoVacinacao(agendamentoId).then((resposta) => {
+      this.setState({ aguardandoEnvio: false });
+      console.info("err" + resposta);
+      if (resposta.resultado === "erro") {
+        // this.setState({
+        //   mensagemRetorno: resposta.motivo,
+        //   tipoMensagem: "danger",
+        //  });
+      } else {
+        this.setState({
+          mensagemRetorno: "",
+          // tipoMensagem: "success",
+          dadosCadastrados: true,
+          aguardandoEnvio: true,
+        });
+        this.carregarAgendamentosVacinacao();
+      }
     });
-    */
-
   };
 
   getStatusDescricao = (id) => {
@@ -116,7 +145,7 @@ class AgendamentoVacinacao extends React.Component {
 
       <div className="content">
         <Row>
-          <Col xs="12">
+          <Col class="col">
             <Card>
               <CardBody>
                 {this.state.aguardandoDados && (
@@ -150,9 +179,14 @@ class AgendamentoVacinacao extends React.Component {
                           <td>
                             <Row>
                               <Col>
-                                {!(agendamento.status === 2) && (
+                                {!(agendamento.status === 2 || agendamento.status === 3) && (
                                   <Button color="danger" onClick={() => this.cancelarAgendamentoVacinacao(agendamento.agendamento_id)}>
                                     Cancelar
+                                  </Button>
+                                )}
+                                {(agendamento.status === 1) && (
+                                  <Button color="warnig" onClick={() => this.cadastrarVacinacao(agendamento.agendamento_id)}>
+                                    Vacinar
                                   </Button>
                                 )}
                               </Col>

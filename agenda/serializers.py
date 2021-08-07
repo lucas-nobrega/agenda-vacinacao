@@ -47,9 +47,9 @@ class AgendamentoVacinacaoSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Verifica se tem agendamentos não cancelados
-        agendamentos = AgendamentoVacinacao.objects.filter(Q(cidadao=validated_data["cidadao"]) & ~Q(status=AgendamentoVacinacao.opcoes.CANCELADO))
+        agendamentos = AgendamentoVacinacao.objects.filter(Q(cidadao=validated_data["cidadao"]) & (~Q(status=AgendamentoVacinacao.opcoes.CANCELADO) | Q(status=AgendamentoVacinacao.opcoes.VACINADO)))
         if(agendamentos.count()>0):
-            raise serializers.ValidationError({"erro": "o cidadão possui agendamentos não cancelados"})
+            raise serializers.ValidationError({"erro": "o cidadão possui agendamentos não cancelados ou já vacinado"})
 
         born = validated_data["cidadao"].data_nascimento
         today = date.today()

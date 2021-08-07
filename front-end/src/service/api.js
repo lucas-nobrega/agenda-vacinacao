@@ -36,8 +36,18 @@ const api = axios.create({
    headers: {
       'Content-Type': 'application/json',
       'X-CSRFToken': Cookies.get('csrftoken'),
-      'Authorization': getAccessToken() != null ? 'Bearer ' + getAccessToken() : null
+    //  'Authorization': getAccessToken() != null ? 'Bearer ' + getAccessToken() : null
    }
+});
+
+api.interceptors.request.use(function (config) {
+   
+   let accessToken = getAccessToken();
+   if(accessToken !== null) {
+      config.headers.Authorization =  'Bearer ' + accessToken;
+   }
+
+   return config;
 });
 
 createAuthRefreshInterceptor(api, refreshAuthLogic);

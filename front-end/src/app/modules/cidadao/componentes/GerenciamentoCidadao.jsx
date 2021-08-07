@@ -123,7 +123,7 @@ class GerenciamentoCidadao extends React.Component {
       <>
         <div className="content">
           <Row>
-            <Col className="offset-md-1 offset-xl-3" xl="6" md="10" xs="12">
+            <Col class="col">
               <Card>
                 <CardBody>
                   {this.state.aguardandoDados && (
@@ -153,10 +153,10 @@ class GerenciamentoCidadao extends React.Component {
                                 <Row>
                                   <ModalEditarCidadao
                                     cidadaoId={cidadao.cidadao_id}
-                                    carregarCidadao={this.carregarCidadao}
+                                    carregarCidadaos={this.carregarCidadaos}
                                     cidadao={cidadao}
                                   ></ModalEditarCidadao>
-                                  <Col>
+                                  <Col >
                                     <Button
                                       color="danger"
                                       onClick={
@@ -166,7 +166,7 @@ class GerenciamentoCidadao extends React.Component {
                                           ) }
                                       }
                                     >
-                                      Deletar
+                                      Excluir
                                     </Button>
                                   </Col>
                                 </Row>
@@ -222,16 +222,6 @@ class GerenciamentoCidadao extends React.Component {
                       </div>
                     </div>
                   )}
-                  <Row>
-                    <Col className="col-4 offset-4">
-                      <Link
-                        to={this.appRelativePath + "/cadastro/cidadao"}
-                        className="btn btn-round btn-md bg-success"
-                      >
-                        Adicionar
-                      </Link>
-                    </Col>
-                  </Row>
                 </CardBody>
               </Card>
             </Col>

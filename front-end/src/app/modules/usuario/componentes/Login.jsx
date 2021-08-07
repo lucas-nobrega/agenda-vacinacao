@@ -46,7 +46,7 @@ class Login extends React.Component {
         };
         this.props.login(credenciais).then((resposta) => {
            console.info(resposta)
-            if (typeof resposta.payload.data.access != 'undefined') {
+            if (typeof resposta.payload != 'undefined') {
                const jwt = {
                   "access" : resposta.payload.data.access,
                   "refresh" : resposta.payload.data.refresh,

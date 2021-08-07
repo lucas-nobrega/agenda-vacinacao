@@ -98,11 +98,12 @@ Authorization: Bearer {{authTokenUsuario}}
 }
 
 ### Pegar locais próximos
-GET {{api_url}}/local-vacinacao-proximos/?latitude=-5.8294272&longitude=-35.2026624
+GET {{api_url}}/local-vacinacao-proximos/?latitude=-5.5193682&longitude=-47.5129447&proximidade=5
+
 ###
 GET {{base_url}}/api/v1/agendamento-vacinacao/6bca8cb2-332f-4478-a40a-ade2186acb03 
 ### Pegar locais
-GET {{api_url}}/local-vacinacao/?format=json&page=1
+GET {{api_url}}/local-vacinacao/203949445
 
 ### Cadastrando Local de Vacinação
 @authTokenAdmin = {{login.response.body.access}}
@@ -111,7 +112,7 @@ content-type: application/json
 Authorization: Bearer {{authTokenAdmin}}
 
 {
-   "vlr_latitude": 50.0,
+   "vlr_latitude": 5.51,
    "vlr_longitude": 50.0,
    "cod_munic": "2408102",
    "cod_cnes": "123456896834236",
@@ -132,10 +133,10 @@ Authorization: Bearer {{authTokenAdmin}}
    "vlr_longitude": 72.0,
    "cod_munic": "2408102",
    "cod_cnes": "123456896834236",
-   "nom_estab": "Pração de São José",
-   "dsc_endereco": "Rua agata - potilandia",
-   "dsc_bairro": "Lagoa Nova",
-   "dsc_cidade": "Natal"
+   "nom_estab": "Centro de Saúde Popular",
+   "dsc_endereco": "Rua Estreita n. 01",
+   "dsc_bairro": "Vila Lobão",
+   "dsc_cidade": "Imperatriz"
 }
 
 ### Pegar agendamento do usuario logado
@@ -170,3 +171,6 @@ Authorization: Bearer {{authTokenUsuario}}
 DELETE {{base_url}}/api/v1/cidadao/6e4ae566-a503-458f-9cf9-4cf1037b3c5e/ HTTP/1.1
 content-type: application/json
 Authorization: Bearer {{authTokenAdmin}}
+
+###
+GET {{api_url}}/agendamento-vacinacao/estatistica

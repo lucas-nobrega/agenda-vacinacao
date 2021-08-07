@@ -187,7 +187,7 @@ LOGGING = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS =['192.168.0.165','127.0.0.1', 'localhost', '192.168.0.120']
+ALLOWED_HOSTS =['192.168.0.165','127.0.0.1', 'localhost', '192.168.0.120', '192.168.0.113']
 
 SIMPLE_JWT = {
    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),

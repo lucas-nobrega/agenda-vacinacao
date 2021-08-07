@@ -1,7 +1,7 @@
 import React from "react";
 
 import PerfectScrollbar from "perfect-scrollbar";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import { bindActionCreators } from "redux";
 import DemoNavbar from "./DemoNavbar";
@@ -88,6 +88,17 @@ class Dashboard extends React.Component {
                                 );
                             }
                         })}
+                        <Route
+                exact
+                path="/agenda"
+                render={() => {
+                    return (
+                      
+                      <Redirect to="/agenda/pagina_inicial" /> 
+                      
+                    )
+                }}
+              />
                     </Switch>
                     <Footer fluid />
                 </div>

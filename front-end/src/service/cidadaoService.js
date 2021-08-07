@@ -36,8 +36,8 @@ const cidadaoService = {
       return api.delete('cidadao/' + id + "/")
          .then(response => response)
    },  
-   async editarCidadao(dados_cadastrais, id) {
-      return api.put('cidadao/' + id +"/", dados_cadastrais)
+   async atualizarCidadao(dados_cadastrais, id) {
+      return api.patch('cidadao/' + id +"/", dados_cadastrais)
          .then(response => response)
          .catch(err =>{
             return {"resultado" : "erro", "motivo" : "Erro ao requisitar os dados"};

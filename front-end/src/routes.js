@@ -13,6 +13,7 @@ import AgendamentoVacinacao from "app/modules/agendamento/gerir/AgendamentoVacin
 //import RotasAcompanhamento from "app/modules/acompanhamento/componentes/RotasAcompanhamento";
 //import CadastroDoenca from "app/modules/cidadao/componentes/CadastroDoenca"
 import AgendarVacinacao from "app/modules/agendamento/usuario/AgendarVacinacao";
+import LocalVacinacaoProximos from "app/modules/localvacinacao/LocalVacinacaoProximos";
 
 const appRelativePath = "/agenda";
 
@@ -65,7 +66,6 @@ var routes = [
     layout: appRelativePath,
     permissions: ['admin'],
   },
-   // Rotas do Template ## RERVISAR
   {
     path: "/pagina_inicial",
     name: "Pagina Inicial",
@@ -73,6 +73,13 @@ var routes = [
     component: PaginaInicial,
     layout: appRelativePath,
   },
+  {
+   path: "/locais-proximos",
+   name: "Locais Próximos",
+   icon: "nc-icon nc-bank",
+   component: LocalVacinacaoProximos,
+   layout: appRelativePath,
+ },
 
   {
     path: "/agendar",

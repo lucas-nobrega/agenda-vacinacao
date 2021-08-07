@@ -25,13 +25,8 @@ class LocalVacinacao extends React.Component {
         end: itensPaginacao,
         pagesCount: 0,
       },
-      mensagemRetorno: "",
+      proximidade: 5,
       aguardandoDados: false,
-      aguardandoEnvio: false,
-      tipoMensagem: "success",
-      dadosCadastrados: false,
-      isOpen: false,
-      dropdownOpen: false,
     };
   }
 
@@ -53,17 +48,14 @@ class LocalVacinacao extends React.Component {
       controlePaginacao.pageLimit = controlePaginacao.pagesCount;
     }
 
-    // increment start page when current page is greater than 5
     if (controlePaginacao.paginaAtual - itensPaginacaoMeio >= 1) {
       controlePaginacao.start = controlePaginacao.paginaAtual - itensPaginacaoMeio ;
     }
 
-    // if reaching end of pagination stop increment
     if (controlePaginacao.start + controlePaginacao.pageLimit > controlePaginacao.pagesCount) {
       controlePaginacao.start = controlePaginacao.pagesCount - controlePaginacao.pageLimit + 1;
     }
 
-    // increment end page when current + 5 exceeds page limit
     if (controlePaginacao.paginaAtual + itensPaginacaoMeio >= controlePaginacao.pageLimit) {
       controlePaginacao.end = controlePaginacao.paginaAtual + itensPaginacaoMeio + 1;
       controlePaginacao.pageLimit = controlePaginacao.end;
@@ -76,10 +68,10 @@ class LocalVacinacao extends React.Component {
     });
   };
 
-  carregarLocaisVacinacao = () => {
+  carregarLocaisVacinacao = (latitude, longitude) => {
     this.setState({ aguardandoDados: true });
     
-    localVacinacaoService.getLocaisVacinacao(this.state.controlePaginacao.paginaAtual).then((resposta) => {
+    localVacinacaoService.getLocaisVacinacaoProximos(latitude, longitude, this.state.proximidade).then((resposta) => {
       this.atualizarControlePagina(this.state.controlePaginacao.paginaAtual, resposta.data.count);
       this.setState({
         locaisVacinacao: resposta.data.results,
@@ -88,32 +80,10 @@ class LocalVacinacao extends React.Component {
     });
   };
 
-  atualizarPagina = (event, pagina) => {
-     //@TODO atualizar rota e recarregar a página
-    console.info("Pagina selecionada" + pagina);
-  };
-
-  deletarLocalVacinacao = (id) => {
-    this.setState({ aguardandoDados: true });
-    localVacinacaoService.deletarLocalVacinacao(id).then((resposta) => {
-      if (resposta.resultado === "erro") {
-        this.setState({
-          mensagemRetorno: resposta.motivo,
-          tipoMensagem: "danger",
-        });
-      } else {
-        this.setState({
-          mensagemRetorno: "Local deletado com sucesso",
-          tipoMensagem: "success",
-          aguardandoDados: false,
-        });
-      }
-      this.carregarLocaisVacinacao();
-    });
-  };
-
   componentDidMount() {
-    this.carregarLocaisVacinacao();
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.carregarLocaisVacinacao(position.coords.latitude, position.coords.longitude);
+    });
   }
 
   render() {
@@ -121,7 +91,7 @@ class LocalVacinacao extends React.Component {
       <>
         <div className="content">
           <Row>
-            <Col class="col">
+            <Col className="offset-md-1 offset-xl-3" xl="6" md="10" xs="12">
               <Card>
                 <CardBody>
                   {this.state.aguardandoDados && (
@@ -137,7 +107,6 @@ class LocalVacinacao extends React.Component {
                             <th>CNES</th>
                             <th>Nome</th>
                             <th>Cidade</th>
-                            <th>Opções</th>
                           </tr>
                         </thead>
 
@@ -147,20 +116,6 @@ class LocalVacinacao extends React.Component {
                               <td>{local.cod_cnes}</td>
                               <td>{local.nom_estab}</td>
                               <td>{local.dsc_cidade}</td>
-                              <td>
-                                <Row>
-                                  <ModalEditarLocalVacinacao
-                                    localId={local.cod_cnes}
-                                    carregarLocaisVacinacao={this.carregarLocaisVacinacao}
-                                    localVacinacao={local}
-                                  ></ModalEditarLocalVacinacao>
-                                  <Col>
-                                    <Button color="danger" onClick={() => this.deletarLocalVacinacao(local.cod_cnes)}>
-                                    Excluir
-                                    </Button>
-                                  </Col>
-                                </Row>
-                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -188,11 +143,6 @@ class LocalVacinacao extends React.Component {
                         </div>
                     </div>
                   )}
-                  <Row>
-                    <Col className="col-4 offset-4">
-                      <ModalCadastrarLocalVacinacao carregarLocaisVacinacao={this.carregarLocaisVacinacao}></ModalCadastrarLocalVacinacao>
-                    </Col>
-                  </Row>
                 </CardBody>
               </Card>
             </Col>

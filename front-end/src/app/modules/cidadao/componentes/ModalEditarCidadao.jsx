@@ -1,6 +1,5 @@
 import React from "react";
-import grupoAtendimentoService from "service/grupoAtendimentoService";
-import usuarioService from "service/usuarioService";
+import cidadaoService from "service/cidadaoService";
 
 import {
   Button,
@@ -34,23 +33,20 @@ class ModalEditarGrupoAtendimento extends React.Component {
     };
   }
 
-  editarCidadao = (event) => {
+  atualizarCidadao = (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
     this.setState({ aguardandoEnvio: true });
-    console.log(data.idade_minima);
     const dados = {
       nome_completo: data.get("nome_completo"),
-      email: data.get("email"),
-      password: data.get("password"),
-      password2: data.get("password2"),
       data_nascimento: data.get("data_nascimento"),
     };
-    console.log(dados.idade_minima);
-    usuarioService
-      .editarCidadao(dados, this.props.cidadao.user_id)
+    console.info("Editando cidadao: " + this.props.cidadao.cidadao_id)
+    cidadaoService
+      .atualizarCidadao(dados, this.props.cidadao.cidadao_id)
       .then((resposta) => {
-        this.props.carregarCidadao();
+         console.info(resposta);
+        this.props.carregarCidadaos();
         /* this.getNomeDoenca(this.props.doencaId); */
         this.toggle();
       });
@@ -102,7 +98,7 @@ class ModalEditarGrupoAtendimento extends React.Component {
             <div className="content">
               <CardBody>
                 {
-                  <Form onSubmit={(e) => this.editarGrupoAtendimento(e)}>
+                  <Form onSubmit={(e) => this.atualizarCidadao(e)}>
                     <Row xs="1" md="2" sm="2">
                       {" "}
                       {/* numero de linhas dependendo do width da tela xs= extra small */}
@@ -116,19 +112,6 @@ class ModalEditarGrupoAtendimento extends React.Component {
                             type="text"
                             defaultValue={this.state.cidadao.nome_completo}
                             //onBlur={(e) => this.requiredInput(e)}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row xs="1" md="2" sm="2">
-                      <Col className="col-xl-6">
-                        <FormGroup>
-                          <Label for="exampleSelect">Email</Label>
-                          <Input
-                            name="email"
-                            placeholder="Digite seu email"
-                            type="email"
-                            defaultValue={this.state.cidadao.email}
                           />
                         </FormGroup>
                       </Col>
