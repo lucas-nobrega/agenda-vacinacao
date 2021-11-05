@@ -11,9 +11,12 @@ GET {{api_url}}/grupo-atendimento
 
 ###*
 GET {{api_url}}/local-vacinacao
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 ###
 GET {{api_url}}/cidadao
+
 
 ### Cadastro de usuario
 # @name cadastroUsuario
